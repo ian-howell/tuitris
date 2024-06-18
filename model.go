@@ -32,7 +32,13 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m Model) View() string {
-	return ""
+	switch m.CurrentScreen {
+	case ScreenSplash:
+		return "Splash"
+	case ScreenError:
+		return "Error"
+	}
+	return "Error"
 }
 
 type TickMsg time.Time
