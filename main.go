@@ -9,7 +9,7 @@ import (
 
 func main() {
 	initialModel := Model{
-		CurrentScreen: ScreenMenu,
+		CurrentScreen: MenuScreen,
 		MenuMenu: Menu{
 			Choices: []Choice{
 				InitChoice{},

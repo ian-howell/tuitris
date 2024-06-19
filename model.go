@@ -35,14 +35,14 @@ type Choice interface {
 type InitChoice struct{}
 
 func (InitChoice) Name() string       { return "Init" }
-func (InitChoice) Cmd() tea.Cmd       { return CmdInit }
-func (InitChoice) NextScreen() Screen { return ScreenInit }
+func (InitChoice) Cmd() tea.Cmd       { return InitCmd }
+func (InitChoice) NextScreen() Screen { return InitScreen }
 
 type ExitChoice struct{}
 
 func (ExitChoice) Name() string       { return "Exit" }
 func (ExitChoice) Cmd() tea.Cmd       { return tea.Quit }
-func (ExitChoice) NextScreen() Screen { return ScreenError }
+func (ExitChoice) NextScreen() Screen { return ErrorScreen }
 
 func (m Model) Init() tea.Cmd {
 	return doTick()
@@ -50,7 +50,7 @@ func (m Model) Init() tea.Cmd {
 
 func (m Model) KeyHandler(screen Screen) KeyHandler {
 	switch screen {
-	case ScreenMenu:
+	case MenuScreen:
 		return MenuKeyHandler{}
 	}
 	return MenuKeyHandler{}
@@ -78,13 +78,13 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m Model) View() string {
 	switch m.CurrentScreen {
-	case ScreenSplash:
+	case SplashScreen:
 		return "Splash"
-	case ScreenMenu:
+	case MenuScreen:
 		return ViewMenu(m)
-	case ScreenError:
+	case ErrorScreen:
 		return "Error"
-	case ScreenInit:
+	case InitScreen:
 		return "Init"
 	}
 	return "Error"

@@ -7,15 +7,15 @@ import (
 type Screen int
 
 const (
-	ScreenError = iota
-	ScreenSplash
-	ScreenMenu
-	ScreenOptions
-	ScreenPlay
-	ScreenInit
-	ScreenPause
-	ScreenWin
-	ScreenLose
+	ErrorScreen = iota
+	SplashScreen
+	MenuScreen
+	OptionsScreen
+	PlayScreen
+	InitScreen
+	PauseScreen
+	WinScreen
+	LoseScreen
 )
 
 type MenuScreenHandler struct{}
@@ -47,26 +47,26 @@ func (MenuKeyHandler) HandleKeyPress(model *Model, key string) tea.Cmd {
 	return nil
 }
 
-var _ tea.Cmd = CmdSplash
+var _ tea.Cmd = SplashCmd
 
-func CmdSplash() tea.Msg {
-	return ScreenSplash
+func SplashCmd() tea.Msg {
+	return SplashScreen
 }
 
-var _ tea.Cmd = CmdError
+var _ tea.Cmd = ErrorCmd
 
-func CmdError() tea.Msg {
-	return ScreenError
+func ErrorCmd() tea.Msg {
+	return ErrorScreen
 }
 
-var _ tea.Cmd = CmdMenu
+var _ tea.Cmd = MenuCmd
 
-func CmdMenu() tea.Msg {
-	return ScreenMenu
+func MenuCmd() tea.Msg {
+	return MenuScreen
 }
 
-var _ tea.Msg = CmdInit
+var _ tea.Msg = InitCmd
 
-func CmdInit() tea.Msg {
-	return ScreenInit
+func InitCmd() tea.Msg {
+	return InitScreen
 }
