@@ -1,6 +1,8 @@
 package main
 
-import tea "github.com/charmbracelet/bubbletea"
+import (
+	tea "github.com/charmbracelet/bubbletea"
+)
 
 type Screen int
 
@@ -11,26 +13,60 @@ const (
 	ScreenOptions
 	ScreenPlay
 	ScreenInit
-	ScreenExit
 	ScreenPause
 	ScreenWin
 	ScreenLose
 )
 
-var Screens = map[Screen]struct{}{}
+type MenuScreenHandler struct{}
 
-type ScreenMsg struct{}
-
-func (s ScreenMsg) Next(model Model) tea.Cmd {
-	switch model.CurrentScreen {
-	case ScreenSplash:
-		return model.Splash
-	}
-
-	return model.Error
+func (MenuScreenHandler) KeyHandler(screen Screen) KeyHandler {
+	return MenuKeyHandler{}
 }
 
-type ScreenFunc func(Model) Screen
+type KeyHandler interface {
+	HandleKeyPress(model *Model, key string) tea.Cmd
+}
 
-func (m Model) Splash() tea.Msg { return ScreenError }
-func (m Model) Error() tea.Msg  { return ScreenError }
+type MenuKeyHandler struct{}
+
+func (MenuKeyHandler) HandleKeyPress(model *Model, key string) tea.Cmd {
+	switch key {
+	case "up", "k":
+		if model.MenuMenu.Cursor > 0 {
+			model.MenuMenu.Cursor--
+		}
+	case "down", "j":
+		if model.MenuMenu.Cursor < len(model.MenuMenu.Choices)-1 {
+			model.MenuMenu.Cursor++
+		}
+	case " ":
+		model.CurrentScreen = model.MenuMenu.CurrentChoice().NextScreen()
+		return model.MenuMenu.CurrentChoice().Cmd()
+	}
+	return nil
+}
+
+var _ tea.Cmd = CmdSplash
+
+func CmdSplash() tea.Msg {
+	return ScreenSplash
+}
+
+var _ tea.Cmd = CmdError
+
+func CmdError() tea.Msg {
+	return ScreenError
+}
+
+var _ tea.Cmd = CmdMenu
+
+func CmdMenu() tea.Msg {
+	return ScreenMenu
+}
+
+var _ tea.Msg = CmdInit
+
+func CmdInit() tea.Msg {
+	return ScreenInit
+}
