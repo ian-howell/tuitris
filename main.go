@@ -17,7 +17,7 @@ func main() {
 			},
 		},
 	}
-	if _, err := tea.NewProgram(initialModel).Run(); err != nil {
+	if _, err := tea.NewProgram(initialModel, tea.WithAltScreen()).Run(); err != nil {
 		fmt.Printf("Uh oh, there was an error: %v\n", err)
 		os.Exit(1)
 	}
