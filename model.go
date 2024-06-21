@@ -53,7 +53,7 @@ func (m Model) View() string {
 	case SplashScreen:
 		return "Splash"
 	case MenuScreen:
-		return ViewMenu(m)
+		return DisplayChoices(m)
 	case ErrorScreen:
 		return "Error"
 	case InitScreen:

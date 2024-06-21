@@ -2,7 +2,7 @@ package main
 
 import "fmt"
 
-func ViewMenu(model Model) string {
+func DisplayChoices(model Model) string {
 	s := "Which screen should we go to next?\n\n"
 
 	currentMenu := model.Menus[model.CurrentScreen]
