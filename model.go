@@ -89,11 +89,3 @@ func (m Model) View() string {
 	}
 	return "Error"
 }
-
-type TickMsg time.Time
-
-func doTick() tea.Cmd {
-	return tea.Tick(FPS, func(t time.Time) tea.Msg {
-		return TickMsg(t)
-	})
-}
