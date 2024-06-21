@@ -18,31 +18,20 @@ const (
 	LoseScreen
 )
 
-type MenuScreenHandler struct{}
-
-func (MenuScreenHandler) KeyHandler(screen Screen) KeyHandler {
-	return MenuKeyHandler{}
-}
-
-type KeyHandler interface {
-	HandleKeyPress(model *Model, key string) tea.Cmd
-}
-
-type MenuKeyHandler struct{}
-
-func (MenuKeyHandler) HandleKeyPress(model *Model, key string) tea.Cmd {
-	switch key {
-	case "up", "k":
-		if model.MenuMenu.Cursor > 0 {
-			model.MenuMenu.Cursor--
+func (m *Model) HandleKeyPress(key string) tea.Cmd {
+	switch m.CurrentScreen {
+	case MenuScreen:
+		currentMenu := m.Menus[m.CurrentScreen]
+		switch key {
+		case "up", "k":
+			currentMenu.Next()
+		case "down", "j":
+			currentMenu.Prev()
+		case " ":
+			m.CurrentScreen = currentMenu.Get().NextScreen
+			currentMenu.Reset()
+			return currentMenu.Get().Cmd
 		}
-	case "down", "j":
-		if model.MenuMenu.Cursor < len(model.MenuMenu.Choices)-1 {
-			model.MenuMenu.Cursor++
-		}
-	case " ":
-		model.CurrentScreen = model.MenuMenu.CurrentChoice().NextScreen()
-		return model.MenuMenu.CurrentChoice().Cmd()
 	}
 	return nil
 }

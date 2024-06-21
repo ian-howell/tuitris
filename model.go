@@ -3,6 +3,8 @@ package main
 import (
 	"time"
 
+	"github.com/ian-howell/tuitris/ring"
+
 	tea "github.com/charmbracelet/bubbletea"
 )
 
@@ -14,46 +16,17 @@ const FPS = 1.0 / time.Second
 type Model struct {
 	CurrentScreen Screen
 
-	MenuMenu Menu
+	Menus map[Screen]ring.Ring[Choice]
 }
 
-type Menu struct {
-	Choices []Choice
-	Cursor  int
+type Choice struct {
+	Name       string
+	Cmd        tea.Cmd
+	NextScreen Screen
 }
-
-func (m Menu) CurrentChoice() Choice {
-	return m.Choices[m.Cursor]
-}
-
-type Choice interface {
-	Name() string
-	Cmd() tea.Cmd
-	NextScreen() Screen
-}
-
-type InitChoice struct{}
-
-func (InitChoice) Name() string       { return "Init" }
-func (InitChoice) Cmd() tea.Cmd       { return InitCmd }
-func (InitChoice) NextScreen() Screen { return InitScreen }
-
-type ExitChoice struct{}
-
-func (ExitChoice) Name() string       { return "Exit" }
-func (ExitChoice) Cmd() tea.Cmd       { return tea.Quit }
-func (ExitChoice) NextScreen() Screen { return ErrorScreen }
 
 func (m Model) Init() tea.Cmd {
 	return doTick()
-}
-
-func (m Model) KeyHandler(screen Screen) KeyHandler {
-	switch screen {
-	case MenuScreen:
-		return MenuKeyHandler{}
-	}
-	return MenuKeyHandler{}
 }
 
 // Update updates the game state. This happens in a goroutine alongside the View function.
@@ -66,8 +39,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		if key == "ctrl+c" || key == "q" {
 			return m, tea.Quit
 		}
-		cmd := m.KeyHandler(m.CurrentScreen).
-			HandleKeyPress(&m, key)
+		cmd := m.HandleKeyPress(key)
 		if cmd != nil {
 			return m, cmd
 		}
