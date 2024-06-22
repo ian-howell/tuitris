@@ -21,6 +21,7 @@ type Model struct {
 	Menus map[Screen]ring.Ring[Choice]
 
 	PlayViewport viewport.Model
+	MainViewport viewport.Model
 }
 
 type Choice struct {
@@ -52,8 +53,19 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	// Update the view
 	var cmd tea.Cmd
+
 	m.PlayViewport.SetContent(m.ViewMenuForCurrentScreen())
 	m.PlayViewport, cmd = m.PlayViewport.Update(msg)
+	if cmd != nil {
+		return m, cmd
+	}
+
+	m.MainViewport.SetContent(m.ViewMenuForCurrentScreen())
+	m.MainViewport, cmd = m.MainViewport.Update(msg)
+	if cmd != nil {
+		return m, cmd
+	}
+
 	return m, cmd
 }
 
@@ -65,7 +77,7 @@ func (m Model) View() string {
 		return ViewPlayScreen(&m)
 
 	}
-	return m.ViewMenuForCurrentScreen()
+	return m.MainViewport.View()
 }
 
 func (m *Model) HandleKeyPress(key string) tea.Cmd {

@@ -135,14 +135,13 @@ func main() {
 	)
 	checkError(err)
 
-	const width = 78
+	const width = 44
 
-	vp := viewport.New(width, 20)
+	vp := viewport.New(width, 44)
 	vp.Style = lipgloss.NewStyle().
 		BorderStyle(lipgloss.RoundedBorder()).
 		BorderForeground(lipgloss.Color("62")).
 		PaddingRight(2)
-	vp.SetContent("Tetris!")
 
 	initialModel := Model{
 		CurrentScreen: SplashScreen,
@@ -156,7 +155,7 @@ func main() {
 			WinScreen:     winScreen,
 			LoseScreen:    loseScreen,
 		},
-		PlayViewport: vp,
+		MainViewport: vp,
 	}
 
 	p := tea.NewProgram(
