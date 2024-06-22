@@ -52,6 +52,8 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m Model) View() string {
 	switch m.CurrentScreen {
+	case ErrorScreen:
+		return "ERROR"
 
 	}
 	return m.ViewMenu()
@@ -87,7 +89,7 @@ func (m *Model) HandleMenu(key string) tea.Cmd {
 func (m *Model) ViewMenu() string {
 	menu, ok := m.Menus[m.CurrentScreen]
 	if !ok {
-		return ""
+		return "ERROR"
 	}
 
 	s := "Which screen should we go to next?\n\n"
