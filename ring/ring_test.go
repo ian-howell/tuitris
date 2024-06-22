@@ -1,6 +1,7 @@
 package ring
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -29,6 +30,58 @@ func TestNew(t *testing.T) {
 				assert.Equal(tt.values, r.Values())
 			}
 
+		})
+	}
+}
+
+func TestNext(t *testing.T) {
+	tests := []struct {
+		values   []string
+		cursor   int
+		expected string
+	}{
+		{[]string{"foo", "bar", "baz"}, 0, "bar"},
+		{[]string{"foo", "bar", "baz"}, 1, "baz"},
+		{[]string{"foo", "bar", "baz"}, 2, "foo"},
+	}
+
+	for i, tt := range tests {
+		testName := fmt.Sprintf("test-%d", i)
+		t.Run(testName, func(t *testing.T) {
+			assert := assert.New(t)
+
+			r := &ring[string]{tt.values, tt.cursor}
+
+			assert.Equal(tt.values[tt.cursor], r.Get())
+
+			r.Next()
+			assert.Equal(tt.expected, r.Get())
+		})
+	}
+}
+
+func TestPrev(t *testing.T) {
+	tests := []struct {
+		values   []string
+		cursor   int
+		expected string
+	}{
+		{[]string{"foo", "bar", "baz"}, 0, "baz"},
+		{[]string{"foo", "bar", "baz"}, 1, "foo"},
+		{[]string{"foo", "bar", "baz"}, 2, "bar"},
+	}
+
+	for i, tt := range tests {
+		testName := fmt.Sprintf("test-%d", i)
+		t.Run(testName, func(t *testing.T) {
+			assert := assert.New(t)
+
+			r := &ring[string]{tt.values, tt.cursor}
+
+			assert.Equal(tt.values[tt.cursor], r.Get())
+
+			r.Prev()
+			assert.Equal(tt.expected, r.Get())
 		})
 	}
 }
