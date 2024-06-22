@@ -128,7 +128,8 @@ func (m *Model) ViewMenuForCurrentScreen() string {
 		return "ERROR"
 	}
 
-	s := "Which screen should we go to next?\n\n"
+	s := fmt.Sprintf("Current Screen: %s\n", m.CurrentScreen)
+	s += "Which screen should we go to next?\n\n"
 
 	// Iterate over our choices
 	for i, choice := range menu.Values() {

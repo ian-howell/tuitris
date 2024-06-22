@@ -4,10 +4,11 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 )
 
+//go:generate stringer -type Screen
 type Screen int
 
 const (
-	ErrorScreen = iota
+	ErrorScreen Screen = iota
 	SplashScreen
 	MenuScreen
 	OptionsScreen
