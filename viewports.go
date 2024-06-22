@@ -15,6 +15,9 @@ type PlayScreenViewport struct {
 }
 
 const (
+	mainWidth  = 44
+	mainHeight = 44
+
 	playFieldWidth  = 20
 	playFieldHeight = 40
 

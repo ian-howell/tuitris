@@ -135,11 +135,6 @@ func main() {
 	)
 	checkError(err)
 
-	const (
-		mainWidth  = 44
-		mainHeight = 44
-	)
-
 	mvp := viewport.New(mainWidth, mainHeight)
 	mvp.Style = lipgloss.NewStyle().
 		BorderStyle(lipgloss.RoundedBorder()).
