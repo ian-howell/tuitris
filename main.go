@@ -147,7 +147,7 @@ func main() {
 	mvp.Style = lipgloss.NewStyle().
 		BorderStyle(lipgloss.RoundedBorder()).
 		BorderForeground(lipgloss.Color("62")).
-		PaddingRight(2)
+		Padding(1)
 
 	pvp := viewport.New(playWidth, playHeight)
 	pvp.Style = lipgloss.NewStyle().
