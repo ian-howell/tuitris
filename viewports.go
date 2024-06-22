@@ -33,13 +33,28 @@ const (
 
 func NewPlayScreenViewport() PlayScreenViewport {
 	pvp := PlayScreenViewport{
+		MainViewport:      viewport.New(mainWidth, mainHeight),
 		PlayFieldViewport: viewport.New(playFieldWidth, playFieldHeight),
+		HoldViewport:      viewport.New(holdWidth, holdHeight),
+		QueueViewport:     viewport.New(queueWidth, queueHeight),
+		ScoreViewport:     viewport.New(scoreWidth, scoreHeight),
 	}
 
 	pvp.PlayFieldViewport.Style = lipgloss.NewStyle().
 		BorderStyle(lipgloss.RoundedBorder()).
-		BorderForeground(lipgloss.Color("62")).
-		PaddingRight(2)
+		BorderForeground(lipgloss.Color("62"))
+
+	pvp.HoldViewport.Style = lipgloss.NewStyle().
+		BorderStyle(lipgloss.RoundedBorder()).
+		BorderForeground(lipgloss.Color("62"))
+
+	pvp.QueueViewport.Style = lipgloss.NewStyle().
+		BorderStyle(lipgloss.RoundedBorder()).
+		BorderForeground(lipgloss.Color("62"))
+
+	pvp.ScoreViewport.Style = lipgloss.NewStyle().
+		BorderStyle(lipgloss.RoundedBorder()).
+		BorderForeground(lipgloss.Color("62"))
 
 	return pvp
 }
@@ -51,9 +66,18 @@ func (p *PlayScreenViewport) Update(model *Model, msg tea.Msg) (tea.Model, tea.C
 	if cmd != nil {
 		return model, cmd
 	}
+
 	return model, nil
 }
 
 func (p PlayScreenViewport) View() string {
-	return p.PlayFieldViewport.View()
+	s := lipgloss.JoinHorizontal(
+		lipgloss.Top,
+		p.HoldViewport.View(),
+		p.PlayFieldViewport.View(),
+		p.QueueViewport.View(),
+	)
+
+	p.MainViewport.SetContent(s)
+	return p.MainViewport.View()
 }
