@@ -20,8 +20,8 @@ type Model struct {
 
 	Menus map[Screen]ring.Ring[Choice]
 
-	PlayViewport viewport.Model
-	MainViewport viewport.Model
+	PlayScreenViewport PlayScreenViewport
+	MainViewport       viewport.Model
 }
 
 type Choice struct {
@@ -56,12 +56,10 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	switch {
 	case m.CurrentScreen == PlayScreen:
-		m.PlayViewport.SetContent(m.ViewMenuForCurrentScreen())
-		m.PlayViewport, cmd = m.PlayViewport.Update(msg)
+		_, cmd = m.PlayScreenViewport.Update(&m, msg)
 		if cmd != nil {
 			return m, cmd
 		}
-
 	case m.CurrentScreen.HasMenu():
 		m.MainViewport.SetContent(m.ViewMenuForCurrentScreen())
 		m.MainViewport, cmd = m.MainViewport.Update(msg)
@@ -78,7 +76,7 @@ func (m Model) View() string {
 	case ErrorScreen:
 		m.MainViewport.SetContent("ERROR")
 	case PlayScreen:
-		m.MainViewport.SetContent(m.PlayViewport.View())
+		m.MainViewport.SetContent(m.PlayScreenViewport.View())
 
 	}
 	return m.MainViewport.View()

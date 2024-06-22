@@ -138,9 +138,6 @@ func main() {
 	const (
 		mainWidth  = 44
 		mainHeight = 44
-
-		playWidth  = 20
-		playHeight = 40
 	)
 
 	mvp := viewport.New(mainWidth, mainHeight)
@@ -148,12 +145,6 @@ func main() {
 		BorderStyle(lipgloss.RoundedBorder()).
 		BorderForeground(lipgloss.Color("62")).
 		Padding(1)
-
-	pvp := viewport.New(playWidth, playHeight)
-	pvp.Style = lipgloss.NewStyle().
-		BorderStyle(lipgloss.RoundedBorder()).
-		BorderForeground(lipgloss.Color("62")).
-		PaddingRight(2)
 
 	initialModel := Model{
 		CurrentScreen: SplashScreen,
@@ -167,8 +158,8 @@ func main() {
 			WinScreen:     winScreen,
 			LoseScreen:    loseScreen,
 		},
-		MainViewport: mvp,
-		PlayViewport: pvp,
+		MainViewport:       mvp,
+		PlayScreenViewport: NewPlayScreenViewport(),
 	}
 
 	p := tea.NewProgram(
