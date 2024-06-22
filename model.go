@@ -77,9 +77,9 @@ func (m *Model) HandleMenu(key string) tea.Cmd {
 
 	switch key {
 	case "up", "k":
-		menu.Next()
-	case "down", "j":
 		menu.Prev()
+	case "down", "j":
+		menu.Next()
 	case " ":
 		m.CurrentScreen = menu.Get().NextScreen
 		menu.Reset()
