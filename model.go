@@ -76,8 +76,9 @@ func (m *Model) HandleMenu(key string) tea.Cmd {
 		menu.Next()
 	case " ":
 		m.CurrentScreen = menu.Get().NextScreen
+		cmd := menu.Get().Cmd
 		menu.Reset()
-		return menu.Get().Cmd
+		return cmd
 	}
 	return nil
 }
