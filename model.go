@@ -38,8 +38,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		key := msg.String()
 		if key == "ctrl+c" || key == "q" {
-			return m, tea.Quit
+			return m, ExitCmd
 		}
+
 		cmd := m.HandleKeyPress(key)
 		if cmd != nil {
 			return m, cmd

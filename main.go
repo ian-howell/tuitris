@@ -33,7 +33,7 @@ func main() {
 		},
 		Choice{
 			Name:       "Exit",
-			Cmd:        tea.Quit,
+			Cmd:        ExitCmd,
 			NextScreen: ErrorScreen,
 		},
 	)
