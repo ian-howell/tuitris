@@ -56,19 +56,21 @@ func (m Model) View() string {
 		return "ERROR"
 
 	}
-	return m.ViewMenu()
+	return m.ViewMenuForCurrentScreen()
 }
 
 func (m *Model) HandleKeyPress(key string) tea.Cmd {
-	if cmd := m.HandleMenu(key); cmd != nil {
-		return cmd
+	if m.CurrentScreen.HasMenu() {
+		if cmd := m.HandleMenu(key); cmd != nil {
+			return cmd
+		}
 	}
 	return nil
 }
 
 func (m *Model) HandleMenu(key string) tea.Cmd {
 	menu, ok := m.Menus[m.CurrentScreen]
-	if !ok {
+	if !ok || !m.CurrentScreen.HasMenu() {
 		return nil
 	}
 
@@ -86,7 +88,7 @@ func (m *Model) HandleMenu(key string) tea.Cmd {
 	return nil
 }
 
-func (m *Model) ViewMenu() string {
+func (m *Model) ViewMenuForCurrentScreen() string {
 	menu, ok := m.Menus[m.CurrentScreen]
 	if !ok {
 		return "ERROR"

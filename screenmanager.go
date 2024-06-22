@@ -18,6 +18,22 @@ const (
 	LoseScreen
 )
 
+func (s Screen) HasMenu() bool {
+	switch s {
+	case SplashScreen,
+		MenuScreen,
+		PlayScreen,
+		OptionsScreen,
+		InitScreen,
+		PauseScreen,
+		WinScreen,
+		LoseScreen:
+		return true
+
+	}
+	return false
+}
+
 var _ tea.Cmd = SplashCmd
 
 func SplashCmd() tea.Msg {
