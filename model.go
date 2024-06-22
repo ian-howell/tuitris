@@ -61,3 +61,30 @@ func (m Model) View() string {
 	}
 	return "Error"
 }
+
+func (m *Model) HandleKeyPress(key string) tea.Cmd {
+	if cmd := m.HandleMenu(key); cmd != nil {
+		return cmd
+	}
+	return nil
+}
+
+func (m *Model) HandleMenu(key string) tea.Cmd {
+	menu, ok := m.Menus[m.CurrentScreen]
+	if !ok {
+		return nil
+	}
+
+	switch key {
+	case "up", "k":
+		menu.Next()
+	case "down", "j":
+		menu.Prev()
+	case " ":
+		m.CurrentScreen = menu.Get().NextScreen
+		menu.Reset()
+		return menu.Get().Cmd
+	}
+	return nil
+}
+
