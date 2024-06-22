@@ -73,7 +73,12 @@ func (p *PlayScreenViewport) Update(model *Model, msg tea.Msg) (tea.Model, tea.C
 func (p PlayScreenViewport) View() string {
 	s := lipgloss.JoinHorizontal(
 		lipgloss.Top,
-		p.HoldViewport.View(),
+		lipgloss.JoinVertical(
+			lipgloss.Center,
+			p.HoldViewport.View(),
+			"HOLD\n\n\n",
+			p.ScoreViewport.View(),
+		),
 		p.PlayFieldViewport.View(),
 		p.QueueViewport.View(),
 	)
