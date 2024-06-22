@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/ian-howell/tuitris/ring"
@@ -50,16 +51,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m Model) View() string {
 	switch m.CurrentScreen {
-	case SplashScreen:
-		return "Splash"
-	case MenuScreen:
-		return DisplayChoices(m)
-	case ErrorScreen:
-		return "Error"
-	case InitScreen:
-		return "Init"
+
 	}
-	return "Error"
+	return m.ViewMenu()
 }
 
 func (m *Model) HandleKeyPress(key string) tea.Cmd {
@@ -88,3 +82,27 @@ func (m *Model) HandleMenu(key string) tea.Cmd {
 	return nil
 }
 
+func (m *Model) ViewMenu() string {
+	menu, ok := m.Menus[m.CurrentScreen]
+	if !ok {
+		return ""
+	}
+
+	s := "Which screen should we go to next?\n\n"
+
+	// Iterate over our choices
+	for i, choice := range menu.Values() {
+
+		// Is the cursor pointing at this choice?
+		cursor := " " // no cursor
+		if menu.Cursor() == i {
+			cursor = ">" // cursor!
+		}
+
+		// Render the row
+		s += fmt.Sprintf("%s %s\n", cursor, choice.Name)
+	}
+
+	// Send the UI for rendering
+	return s
+}
