@@ -6,6 +6,7 @@ import (
 
 	"github.com/ian-howell/tuitris/ring"
 
+	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 )
 
@@ -18,6 +19,8 @@ type Model struct {
 	CurrentScreen Screen
 
 	Menus map[Screen]ring.Ring[Choice]
+
+	PlayViewport viewport.Model
 }
 
 type Choice struct {
@@ -47,25 +50,42 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 	}
 
-	return m, nil
+	// Update the view
+	var cmd tea.Cmd
+	m.PlayViewport.SetContent(m.ViewMenuForCurrentScreen())
+	m.PlayViewport, cmd = m.PlayViewport.Update(msg)
+	return m, cmd
 }
 
 func (m Model) View() string {
 	switch m.CurrentScreen {
 	case ErrorScreen:
 		return "ERROR"
+	case PlayScreen:
+		return ViewPlayScreen(&m)
 
 	}
 	return m.ViewMenuForCurrentScreen()
 }
 
 func (m *Model) HandleKeyPress(key string) tea.Cmd {
+	if m.CurrentScreen == PlayScreen {
+		if cmd := m.HandlePlayScreen(key); cmd != nil {
+			return cmd
+		}
+		return nil
+	}
+
 	if m.CurrentScreen.HasMenu() {
 		if cmd := m.HandleMenu(key); cmd != nil {
 			return cmd
 		}
 	}
 	return nil
+}
+
+func (m *Model) HandlePlayScreen(key string) tea.Cmd {
+	return m.HandleMenu(key)
 }
 
 func (m *Model) HandleMenu(key string) tea.Cmd {

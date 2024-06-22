@@ -6,7 +6,9 @@ import (
 
 	"github.com/ian-howell/tuitris/ring"
 
+	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
 )
 
 func main() {
@@ -133,6 +135,15 @@ func main() {
 	)
 	checkError(err)
 
+	const width = 78
+
+	vp := viewport.New(width, 20)
+	vp.Style = lipgloss.NewStyle().
+		BorderStyle(lipgloss.RoundedBorder()).
+		BorderForeground(lipgloss.Color("62")).
+		PaddingRight(2)
+	vp.SetContent("Tetris!")
+
 	initialModel := Model{
 		CurrentScreen: SplashScreen,
 		Menus: map[Screen]ring.Ring[Choice]{
@@ -145,6 +156,7 @@ func main() {
 			WinScreen:     winScreen,
 			LoseScreen:    loseScreen,
 		},
+		PlayViewport: vp,
 	}
 
 	p := tea.NewProgram(
