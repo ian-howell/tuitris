@@ -135,10 +135,22 @@ func main() {
 	)
 	checkError(err)
 
-	const width = 44
+	const (
+		mainWidth  = 44
+		mainHeight = 44
 
-	vp := viewport.New(width, 44)
-	vp.Style = lipgloss.NewStyle().
+		playWidth  = 20
+		playHeight = 40
+	)
+
+	mvp := viewport.New(mainWidth, mainHeight)
+	mvp.Style = lipgloss.NewStyle().
+		BorderStyle(lipgloss.RoundedBorder()).
+		BorderForeground(lipgloss.Color("62")).
+		PaddingRight(2)
+
+	pvp := viewport.New(playWidth, playHeight)
+	pvp.Style = lipgloss.NewStyle().
 		BorderStyle(lipgloss.RoundedBorder()).
 		BorderForeground(lipgloss.Color("62")).
 		PaddingRight(2)
@@ -155,7 +167,8 @@ func main() {
 			WinScreen:     winScreen,
 			LoseScreen:    loseScreen,
 		},
-		MainViewport: vp,
+		MainViewport: mvp,
+		PlayViewport: pvp,
 	}
 
 	p := tea.NewProgram(

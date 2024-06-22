@@ -54,16 +54,20 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	// Update the view
 	var cmd tea.Cmd
 
-	m.PlayViewport.SetContent(m.ViewMenuForCurrentScreen())
-	m.PlayViewport, cmd = m.PlayViewport.Update(msg)
-	if cmd != nil {
-		return m, cmd
-	}
+	switch {
+	case m.CurrentScreen == PlayScreen:
+		m.PlayViewport.SetContent(m.ViewMenuForCurrentScreen())
+		m.PlayViewport, cmd = m.PlayViewport.Update(msg)
+		if cmd != nil {
+			return m, cmd
+		}
 
-	m.MainViewport.SetContent(m.ViewMenuForCurrentScreen())
-	m.MainViewport, cmd = m.MainViewport.Update(msg)
-	if cmd != nil {
-		return m, cmd
+	case m.CurrentScreen.HasMenu():
+		m.MainViewport.SetContent(m.ViewMenuForCurrentScreen())
+		m.MainViewport, cmd = m.MainViewport.Update(msg)
+		if cmd != nil {
+			return m, cmd
+		}
 	}
 
 	return m, cmd
@@ -72,9 +76,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 func (m Model) View() string {
 	switch m.CurrentScreen {
 	case ErrorScreen:
-		return "ERROR"
+		m.MainViewport.SetContent("ERROR")
 	case PlayScreen:
-		return ViewPlayScreen(&m)
+		m.MainViewport.SetContent(m.PlayViewport.View())
 
 	}
 	return m.MainViewport.View()
