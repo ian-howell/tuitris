@@ -10,6 +10,7 @@ import (
 )
 
 func main() {
+
 	menuMenu, err := ring.New(
 		Choice{
 			Name:       "Init",
@@ -22,10 +23,7 @@ func main() {
 			NextScreen: ErrorScreen,
 		},
 	)
-	if err != nil {
-		fmt.Printf("Uh oh, there was an error: %v\n", err)
-		os.Exit(1)
-	}
+	checkError(err)
 
 	initialModel := Model{
 		CurrentScreen: MenuScreen,
@@ -33,8 +31,20 @@ func main() {
 			MenuScreen: menuMenu,
 		},
 	}
-	if _, err := tea.NewProgram(initialModel, tea.WithAltScreen()).Run(); err != nil {
+
+	p := tea.NewProgram(
+		initialModel,
+		tea.WithAltScreen(),
+	)
+
+	_, err = p.Run()
+	checkError(err)
+}
+
+func checkError(err error) {
+	if err != nil {
 		fmt.Printf("Uh oh, there was an error: %v\n", err)
 		os.Exit(1)
 	}
+
 }
