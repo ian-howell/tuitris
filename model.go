@@ -62,10 +62,11 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 	case m.CurrentScreen.HasMenu():
 		m.MainViewport.SetContent(m.ViewMenuForCurrentScreen())
-		m.MainViewport, cmd = m.MainViewport.Update(msg)
-		if cmd != nil {
-			return m, cmd
-		}
+	}
+
+	m.MainViewport, cmd = m.MainViewport.Update(msg)
+	if cmd != nil {
+		return m, cmd
 	}
 
 	return m, cmd
