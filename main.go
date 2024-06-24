@@ -4,9 +4,16 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/ian-howell/tuitris/iamerror"
+	"github.com/ian-howell/tuitris/lose"
+	"github.com/ian-howell/tuitris/mainmenu"
+	"github.com/ian-howell/tuitris/options"
+	"github.com/ian-howell/tuitris/pause"
 	"github.com/ian-howell/tuitris/play"
-	"github.com/ian-howell/tuitris/ring"
+	"github.com/ian-howell/tuitris/reset"
 	"github.com/ian-howell/tuitris/screen"
+	"github.com/ian-howell/tuitris/splash"
+	"github.com/ian-howell/tuitris/win"
 
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
@@ -20,53 +27,53 @@ const (
 
 func main() {
 
-	splashMenu, err := ring.New(screen.MainMenu)
-	checkError(err)
-
-	menuMenu, err := ring.New(screen.Init, screen.Options, screen.Exit)
-	checkError(err)
-
-	optionsMenu, err := ring.New(screen.MainMenu)
-	checkError(err)
-
-	initScreen, err := ring.New(screen.Play)
-	checkError(err)
-
-	playScreen, err := ring.New(screen.Pause, screen.Win, screen.Lose)
-	checkError(err)
-
-	pauseScreen, err := ring.New(screen.Init, screen.MainMenu, screen.Exit)
-	checkError(err)
-
-	winScreen, err := ring.New(screen.Init, screen.MainMenu, screen.Exit)
-	checkError(err)
-
-	loseScreen, err := ring.New(screen.Init, screen.MainMenu, screen.Exit)
-	checkError(err)
-
 	mvp := viewport.New(mainWidth, mainHeight)
 	mvp.Style = lipgloss.NewStyle().
 		BorderStyle(lipgloss.RoundedBorder()).
 		BorderForeground(lipgloss.Color("62")).
 		Padding(1)
 
+	splashModel, err := splash.New()
+	checkError(err)
+
+	mainMenuModel, err := mainmenu.New()
+	checkError(err)
+
+	optionsModel, err := options.New()
+	checkError(err)
+
+	resetModel, err := reset.New()
+	checkError(err)
+
 	playModel, err := play.New()
+	checkError(err)
+
+	pauseModel, err := pause.New()
+	checkError(err)
+
+	winModel, err := win.New()
+	checkError(err)
+
+	loseModel, err := lose.New()
+	checkError(err)
+
+	errorModel, err := iamerror.New()
 	checkError(err)
 
 	initialModel := Model{
 		CurrentScreen: screen.Splash,
-		Menus: map[screen.Screen]ring.Ring[screen.Screen]{
-			screen.Splash:   splashMenu,
-			screen.MainMenu: menuMenu,
-			screen.Options:  optionsMenu,
-			screen.Init:     initScreen,
-			screen.Play:     playScreen,
-			screen.Pause:    pauseScreen,
-			screen.Win:      winScreen,
-			screen.Lose:     loseScreen,
-		},
+
 		MainViewport: mvp,
-		PlayModel:    playModel,
+
+		SplashModel:   splashModel,
+		MainMenuModel: mainMenuModel,
+		OptionsModel:  optionsModel,
+		ResetModel:    resetModel,
+		PlayModel:     playModel,
+		PauseModel:    pauseModel,
+		WinModel:      winModel,
+		LoseModel:     loseModel,
+		ErrorModel:    errorModel,
 	}
 
 	p := tea.NewProgram(

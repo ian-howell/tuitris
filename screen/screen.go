@@ -8,26 +8,10 @@ const (
 	Splash
 	MainMenu
 	Options
+	Reset
 	Play
-	Init
 	Pause
 	Win
 	Lose
 	Exit
 )
-
-func (s Screen) HasMenu() bool {
-	switch s {
-	case Splash,
-		MainMenu,
-		Play,
-		Options,
-		Init,
-		Pause,
-		Win,
-		Lose:
-		return true
-
-	}
-	return false
-}

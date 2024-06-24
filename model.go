@@ -1,14 +1,20 @@
 package main
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/ian-howell/tuitris/iamerror"
+	"github.com/ian-howell/tuitris/lose"
+	"github.com/ian-howell/tuitris/mainmenu"
+	"github.com/ian-howell/tuitris/options"
+	"github.com/ian-howell/tuitris/pause"
 	"github.com/ian-howell/tuitris/play"
-	"github.com/ian-howell/tuitris/ring"
+	"github.com/ian-howell/tuitris/reset"
 	"github.com/ian-howell/tuitris/screen"
+	"github.com/ian-howell/tuitris/splash"
+	"github.com/ian-howell/tuitris/win"
 )
 
 const FPS = 1.0 / time.Second
@@ -19,11 +25,17 @@ const FPS = 1.0 / time.Second
 type Model struct {
 	CurrentScreen screen.Screen
 
-	Menus map[screen.Screen]ring.Ring[screen.Screen]
-
 	MainViewport viewport.Model
 
-	PlayModel play.Model
+	SplashModel   splash.Model
+	MainMenuModel mainmenu.Model
+	OptionsModel  options.Model
+	ResetModel    reset.Model
+	PlayModel     play.Model
+	PauseModel    pause.Model
+	WinModel      win.Model
+	LoseModel     lose.Model
+	ErrorModel    iamerror.Model
 }
 
 func (m Model) Init() tea.Cmd {
@@ -40,103 +52,62 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		if key == "ctrl+c" || key == "q" {
 			return m, tea.Quit
 		}
-
-		cmd := m.HandleKeyPress(key)
-		if cmd != nil {
-			return m, cmd
-		}
 	}
 
-	// Update the view
-	var cmd tea.Cmd
-
-	switch {
-	case m.CurrentScreen == screen.Play:
+	switch m.CurrentScreen {
+	case screen.Splash:
+		m.SplashModel, m.CurrentScreen = m.SplashModel.Update(msg)
+	case screen.MainMenu:
+		m.MainMenuModel, m.CurrentScreen = m.MainMenuModel.Update(msg)
+	case screen.Options:
+		m.OptionsModel, m.CurrentScreen = m.OptionsModel.Update(msg)
+	case screen.Reset:
+		m.ResetModel, m.CurrentScreen = m.ResetModel.Update(msg)
+	case screen.Play:
 		m.PlayModel, m.CurrentScreen = m.PlayModel.Update(msg)
-	case m.CurrentScreen.HasMenu():
-		m.MainViewport.SetContent(m.ViewMenuForCurrentScreen())
+	case screen.Pause:
+		m.PauseModel, m.CurrentScreen = m.PauseModel.Update(msg)
+	case screen.Win:
+		m.WinModel, m.CurrentScreen = m.WinModel.Update(msg)
+	case screen.Lose:
+		m.LoseModel, m.CurrentScreen = m.LoseModel.Update(msg)
+	case screen.Error:
+		m.ErrorModel, m.CurrentScreen = m.ErrorModel.Update(msg)
+
 	}
 
-	m.MainViewport, cmd = m.MainViewport.Update(msg)
-	if cmd != nil {
-		return m, cmd
+	if m.CurrentScreen == screen.Exit {
+		return m, tea.Quit
 	}
-
-	return m, cmd
+	return m, nil
 }
 
 func (m Model) View() string {
 	var s string
 	switch m.CurrentScreen {
+	case screen.Splash:
+		s = m.SplashModel.View()
+	case screen.MainMenu:
+		s = m.MainMenuModel.View()
+	case screen.Options:
+		s = m.OptionsModel.View()
+	case screen.Reset:
+		s = m.ResetModel.View()
 	case screen.Play:
 		s = m.PlayModel.View()
+	case screen.Pause:
+		s = m.PauseModel.View()
+	case screen.Win:
+		s = m.WinModel.View()
+	case screen.Lose:
+		s = m.LoseModel.View()
+	case screen.Exit:
+		// Nothing to print while exiting
 	case screen.Error:
-		s = "ERROR"
-	default:
-		s = m.ViewMenuForCurrentScreen()
+		s = m.ErrorModel.View()
 
 	}
 
 	m.MainViewport.SetContent(s)
 	return m.MainViewport.View()
-}
-
-func (m *Model) HandleKeyPress(key string) tea.Cmd {
-	if m.CurrentScreen == screen.Play {
-		m.HandlePlayScreen(key)
-		return nil
-	}
-
-	if m.CurrentScreen.HasMenu() {
-		m.HandleMenu(key)
-		return nil
-	}
-
-	return nil
-}
-
-func (m *Model) HandlePlayScreen(key string) {
-	m.HandleMenu(key)
-}
-
-func (m *Model) HandleMenu(key string) {
-	menu, ok := m.Menus[m.CurrentScreen]
-	if !ok || !m.CurrentScreen.HasMenu() {
-		return
-	}
-
-	switch key {
-	case "up", "k":
-		menu.Prev()
-	case "down", "j":
-		menu.Next()
-	case " ":
-		m.CurrentScreen = menu.Get()
-	}
-}
-
-func (m *Model) ViewMenuForCurrentScreen() string {
-	menu, ok := m.Menus[m.CurrentScreen]
-	if !ok {
-		return "ERROR"
-	}
-
-	s := fmt.Sprintf("Current Screen: %s\n", m.CurrentScreen)
-	s += "Which screen should we go to next?\n\n"
-
-	// Iterate over our choices
-	for i, choice := range menu.Values() {
-
-		// Is the cursor pointing at this choice?
-		cursor := " " // no cursor
-		if menu.Cursor() == i {
-			cursor = ">" // cursor!
-		}
-
-		// Render the row
-		s += fmt.Sprintf("%s %s\n", cursor, choice)
-	}
-
-	// Send the UI for rendering
-	return s
 }

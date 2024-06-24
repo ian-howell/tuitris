@@ -12,17 +12,17 @@ func _() {
 	_ = x[Splash-1]
 	_ = x[MainMenu-2]
 	_ = x[Options-3]
-	_ = x[Play-4]
-	_ = x[Init-5]
+	_ = x[Reset-4]
+	_ = x[Play-5]
 	_ = x[Pause-6]
 	_ = x[Win-7]
 	_ = x[Lose-8]
 	_ = x[Exit-9]
 }
 
-const _Screen_name = "ErrorSplashMainMenuOptionsPlayInitPauseWinLoseExit"
+const _Screen_name = "ErrorSplashMainMenuOptionsResetPlayPauseWinLoseExit"
 
-var _Screen_index = [...]uint8{0, 5, 11, 19, 26, 30, 34, 39, 42, 46, 50}
+var _Screen_index = [...]uint8{0, 5, 11, 19, 26, 31, 35, 40, 43, 47, 51}
 
 func (i Screen) String() string {
 	if i < 0 || i >= Screen(len(_Screen_index)-1) {
