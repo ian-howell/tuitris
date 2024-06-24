@@ -6,6 +6,7 @@ import (
 
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/ian-howell/tuitris/play"
 	"github.com/ian-howell/tuitris/ring"
 	"github.com/ian-howell/tuitris/screen"
 )
@@ -20,8 +21,9 @@ type Model struct {
 
 	Menus map[screen.Screen]ring.Ring[screen.Screen]
 
-	PlayScreenViewport PlayScreenViewport
-	MainViewport       viewport.Model
+	MainViewport viewport.Model
+
+	PlayModel play.Model
 }
 
 func (m Model) Init() tea.Cmd {
@@ -50,10 +52,6 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	switch {
 	case m.CurrentScreen == screen.Play:
-		_, cmd = m.PlayScreenViewport.Update(&m, msg)
-		if cmd != nil {
-			return m, cmd
-		}
 	case m.CurrentScreen.HasMenu():
 		m.MainViewport.SetContent(m.ViewMenuForCurrentScreen())
 	}
@@ -67,13 +65,18 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m Model) View() string {
+	var s string
 	switch m.CurrentScreen {
-	case screen.Error:
-		m.MainViewport.SetContent("ERROR")
 	case screen.Play:
-		m.MainViewport.SetContent(m.PlayScreenViewport.View())
+		s = m.PlayModel.View()
+	case screen.Error:
+		s = "ERROR"
+	default:
+		s = m.ViewMenuForCurrentScreen()
 
 	}
+
+	m.MainViewport.SetContent(s)
 	return m.MainViewport.View()
 }
 

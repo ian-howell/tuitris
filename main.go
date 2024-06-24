@@ -4,12 +4,18 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/ian-howell/tuitris/play"
 	"github.com/ian-howell/tuitris/ring"
 	"github.com/ian-howell/tuitris/screen"
 
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+)
+
+const (
+	mainWidth  = 44
+	mainHeight = 44
 )
 
 func main() {
@@ -44,6 +50,9 @@ func main() {
 		BorderForeground(lipgloss.Color("62")).
 		Padding(1)
 
+	playModel, err := play.New()
+	checkError(err)
+
 	initialModel := Model{
 		CurrentScreen: screen.Splash,
 		Menus: map[screen.Screen]ring.Ring[screen.Screen]{
@@ -56,8 +65,8 @@ func main() {
 			screen.Win:      winScreen,
 			screen.Lose:     loseScreen,
 		},
-		MainViewport:       mvp,
-		PlayScreenViewport: NewPlayScreenViewport(),
+		MainViewport: mvp,
+		PlayModel:    playModel,
 	}
 
 	p := tea.NewProgram(
