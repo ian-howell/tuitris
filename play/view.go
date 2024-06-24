@@ -1,8 +1,6 @@
 package play
 
 import (
-	"fmt"
-
 	"github.com/charmbracelet/bubbles/viewport"
 	"github.com/charmbracelet/lipgloss"
 )
@@ -58,19 +56,8 @@ func (m Model) playfieldView() string {
 	vp := viewport.New(playFieldWidth, playFieldHeight)
 	vp.Style = roundedPurpleBorder
 
-	// POC
-	s := fmt.Sprintln("Current Screen: Play")
-	s += "Which screen should we go to next?\n\n"
-
-	for i, choice := range m.Menu.Values() {
-
-		cursor := " "
-		if m.Menu.Cursor() == i {
-			cursor = ">"
-		}
-
-		s += fmt.Sprintf("%s %v\n", cursor, choice)
-	}
+	s := "Current Screen: Play\n"
+	s += "Press P to pause"
 
 	vp.SetContent(s)
 

@@ -52,6 +52,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	switch {
 	case m.CurrentScreen == screen.Play:
+		m.PlayModel, m.CurrentScreen = m.PlayModel.Update(msg)
 	case m.CurrentScreen.HasMenu():
 		m.MainViewport.SetContent(m.ViewMenuForCurrentScreen())
 	}
