@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/ian-howell/tuitris/ring"
+	"github.com/ian-howell/tuitris/screen"
 
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
@@ -13,126 +14,28 @@ import (
 
 func main() {
 
-	splashMenu, err := ring.New(
-		Choice{
-			Name:       "Menu",
-			Cmd:        MenuCmd,
-			NextScreen: MenuScreen,
-		},
-	)
+	splashMenu, err := ring.New(screen.MainMenu)
 	checkError(err)
 
-	menuMenu, err := ring.New(
-		Choice{
-			Name:       "Init",
-			Cmd:        InitCmd,
-			NextScreen: InitScreen,
-		},
-		Choice{
-			Name:       "Options",
-			Cmd:        OptionsCmd,
-			NextScreen: OptionsScreen,
-		},
-		Choice{
-			Name:       "Exit",
-			Cmd:        ExitCmd,
-			NextScreen: ErrorScreen,
-		},
-	)
+	menuMenu, err := ring.New(screen.Init, screen.Options, screen.Exit)
 	checkError(err)
 
-	optionsMenu, err := ring.New(
-		Choice{
-			Name:       "Menu",
-			Cmd:        MenuCmd,
-			NextScreen: MenuScreen,
-		},
-	)
+	optionsMenu, err := ring.New(screen.MainMenu)
 	checkError(err)
 
-	initScreen, err := ring.New(
-		Choice{
-			Name:       "Play",
-			Cmd:        PlayCmd,
-			NextScreen: PlayScreen,
-		},
-	)
+	initScreen, err := ring.New(screen.Play)
 	checkError(err)
 
-	playScreen, err := ring.New(
-		Choice{
-			Name:       "Pause",
-			Cmd:        PauseCmd,
-			NextScreen: PauseScreen,
-		},
-		Choice{
-			Name:       "Win",
-			Cmd:        WinCmd,
-			NextScreen: WinScreen,
-		},
-		Choice{
-			Name:       "Lose",
-			Cmd:        LoseCmd,
-			NextScreen: LoseScreen,
-		},
-	)
+	playScreen, err := ring.New(screen.Pause, screen.Win, screen.Lose)
 	checkError(err)
 
-	pauseScreen, err := ring.New(
-		Choice{
-			Name:       "Init",
-			Cmd:        InitCmd,
-			NextScreen: InitScreen,
-		},
-		Choice{
-			Name:       "Menu",
-			Cmd:        MenuCmd,
-			NextScreen: MenuScreen,
-		},
-		Choice{
-			Name:       "Exit",
-			Cmd:        ExitCmd,
-			NextScreen: ErrorScreen,
-		},
-	)
+	pauseScreen, err := ring.New(screen.Init, screen.MainMenu, screen.Exit)
 	checkError(err)
 
-	winScreen, err := ring.New(
-		Choice{
-			Name:       "Init",
-			Cmd:        InitCmd,
-			NextScreen: InitScreen,
-		},
-		Choice{
-			Name:       "Menu",
-			Cmd:        MenuCmd,
-			NextScreen: MenuScreen,
-		},
-		Choice{
-			Name:       "Exit",
-			Cmd:        ExitCmd,
-			NextScreen: ErrorScreen,
-		},
-	)
+	winScreen, err := ring.New(screen.Init, screen.MainMenu, screen.Exit)
 	checkError(err)
 
-	loseScreen, err := ring.New(
-		Choice{
-			Name:       "Init",
-			Cmd:        InitCmd,
-			NextScreen: InitScreen,
-		},
-		Choice{
-			Name:       "Menu",
-			Cmd:        MenuCmd,
-			NextScreen: MenuScreen,
-		},
-		Choice{
-			Name:       "Exit",
-			Cmd:        ExitCmd,
-			NextScreen: ErrorScreen,
-		},
-	)
+	loseScreen, err := ring.New(screen.Init, screen.MainMenu, screen.Exit)
 	checkError(err)
 
 	mvp := viewport.New(mainWidth, mainHeight)
@@ -142,16 +45,16 @@ func main() {
 		Padding(1)
 
 	initialModel := Model{
-		CurrentScreen: SplashScreen,
-		Menus: map[Screen]ring.Ring[Choice]{
-			SplashScreen:  splashMenu,
-			MenuScreen:    menuMenu,
-			OptionsScreen: optionsMenu,
-			InitScreen:    initScreen,
-			PlayScreen:    playScreen,
-			PauseScreen:   pauseScreen,
-			WinScreen:     winScreen,
-			LoseScreen:    loseScreen,
+		CurrentScreen: screen.Splash,
+		Menus: map[screen.Screen]ring.Ring[screen.Screen]{
+			screen.Splash:   splashMenu,
+			screen.MainMenu: menuMenu,
+			screen.Options:  optionsMenu,
+			screen.Init:     initScreen,
+			screen.Play:     playScreen,
+			screen.Pause:    pauseScreen,
+			screen.Win:      winScreen,
+			screen.Lose:     loseScreen,
 		},
 		MainViewport:       mvp,
 		PlayScreenViewport: NewPlayScreenViewport(),

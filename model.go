@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/ian-howell/tuitris/ring"
-
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/ian-howell/tuitris/ring"
+	"github.com/ian-howell/tuitris/screen"
 )
 
 const FPS = 1.0 / time.Second
@@ -16,18 +16,12 @@ const FPS = 1.0 / time.Second
 //
 // There should only ever be a single instance of a Model.
 type Model struct {
-	CurrentScreen Screen
+	CurrentScreen screen.Screen
 
-	Menus map[Screen]ring.Ring[Choice]
+	Menus map[screen.Screen]ring.Ring[screen.Screen]
 
 	PlayScreenViewport PlayScreenViewport
 	MainViewport       viewport.Model
-}
-
-type Choice struct {
-	Name       string
-	Cmd        tea.Cmd
-	NextScreen Screen
 }
 
 func (m Model) Init() tea.Cmd {
@@ -42,7 +36,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		key := msg.String()
 		if key == "ctrl+c" || key == "q" {
-			return m, ExitCmd
+			return m, tea.Quit
 		}
 
 		cmd := m.HandleKeyPress(key)
@@ -55,7 +49,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 
 	switch {
-	case m.CurrentScreen == PlayScreen:
+	case m.CurrentScreen == screen.Play:
 		_, cmd = m.PlayScreenViewport.Update(&m, msg)
 		if cmd != nil {
 			return m, cmd
@@ -74,9 +68,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m Model) View() string {
 	switch m.CurrentScreen {
-	case ErrorScreen:
+	case screen.Error:
 		m.MainViewport.SetContent("ERROR")
-	case PlayScreen:
+	case screen.Play:
 		m.MainViewport.SetContent(m.PlayScreenViewport.View())
 
 	}
@@ -84,29 +78,27 @@ func (m Model) View() string {
 }
 
 func (m *Model) HandleKeyPress(key string) tea.Cmd {
-	if m.CurrentScreen == PlayScreen {
-		if cmd := m.HandlePlayScreen(key); cmd != nil {
-			return cmd
-		}
+	if m.CurrentScreen == screen.Play {
+		m.HandlePlayScreen(key)
 		return nil
 	}
 
 	if m.CurrentScreen.HasMenu() {
-		if cmd := m.HandleMenu(key); cmd != nil {
-			return cmd
-		}
+		m.HandleMenu(key)
+		return nil
 	}
+
 	return nil
 }
 
-func (m *Model) HandlePlayScreen(key string) tea.Cmd {
-	return m.HandleMenu(key)
+func (m *Model) HandlePlayScreen(key string) {
+	m.HandleMenu(key)
 }
 
-func (m *Model) HandleMenu(key string) tea.Cmd {
+func (m *Model) HandleMenu(key string) {
 	menu, ok := m.Menus[m.CurrentScreen]
 	if !ok || !m.CurrentScreen.HasMenu() {
-		return nil
+		return
 	}
 
 	switch key {
@@ -115,12 +107,8 @@ func (m *Model) HandleMenu(key string) tea.Cmd {
 	case "down", "j":
 		menu.Next()
 	case " ":
-		m.CurrentScreen = menu.Get().NextScreen
-		cmd := menu.Get().Cmd
-		menu.Reset()
-		return cmd
+		m.CurrentScreen = menu.Get()
 	}
-	return nil
 }
 
 func (m *Model) ViewMenuForCurrentScreen() string {
@@ -142,7 +130,7 @@ func (m *Model) ViewMenuForCurrentScreen() string {
 		}
 
 		// Render the row
-		s += fmt.Sprintf("%s %s\n", cursor, choice.Name)
+		s += fmt.Sprintf("%s %s\n", cursor, choice)
 	}
 
 	// Send the UI for rendering
