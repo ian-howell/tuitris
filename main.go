@@ -15,10 +15,10 @@ import (
 	"github.com/ian-howell/tuitris/model/splash"
 	"github.com/ian-howell/tuitris/model/win"
 	"github.com/ian-howell/tuitris/screen"
+	"github.com/ian-howell/tuitris/styles"
 
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
 )
 
 const (
@@ -29,10 +29,7 @@ const (
 func main() {
 
 	mvp := viewport.New(mainWidth, mainHeight)
-	mvp.Style = lipgloss.NewStyle().
-		BorderStyle(lipgloss.RoundedBorder()).
-		BorderForeground(lipgloss.Color("62")).
-		Padding(1)
+	mvp.Style = styles.RoundedPurpleBorder().Padding(1)
 
 	splashModel, err := splash.New()
 	checkError(err)

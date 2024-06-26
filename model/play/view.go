@@ -1,13 +1,11 @@
 package play
 
 import (
+	"github.com/ian-howell/tuitris/styles"
+
 	"github.com/charmbracelet/bubbles/viewport"
 	"github.com/charmbracelet/lipgloss"
 )
-
-var roundedPurpleBorder = lipgloss.NewStyle().
-	BorderStyle(lipgloss.RoundedBorder()).
-	BorderForeground(lipgloss.Color("62"))
 
 const (
 	mainWidth  = 44
@@ -42,19 +40,19 @@ func (m Model) View() string {
 
 func (m Model) holdView() string {
 	vp := viewport.New(holdWidth, holdHeight)
-	vp.Style = roundedPurpleBorder
+	vp.Style = styles.RoundedPurpleBorder()
 	return vp.View()
 }
 
 func (m Model) scoreView() string {
 	vp := viewport.New(scoreWidth, scoreHeight)
-	vp.Style = roundedPurpleBorder
+	vp.Style = styles.RoundedPurpleBorder()
 	return vp.View()
 }
 
 func (m Model) playfieldView() string {
 	vp := viewport.New(playFieldWidth, playFieldHeight)
-	vp.Style = roundedPurpleBorder
+	vp.Style = styles.RoundedPurpleBorder()
 
 	s := "Current Screen: Play\n"
 	s += "Press P to pause"
@@ -66,6 +64,6 @@ func (m Model) playfieldView() string {
 
 func (m Model) queueView() string {
 	vp := viewport.New(queueWidth, holdHeight)
-	vp.Style = roundedPurpleBorder
+	vp.Style = styles.RoundedPurpleBorder()
 	return vp.View()
 }
