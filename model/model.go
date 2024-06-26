@@ -1,20 +1,20 @@
-package main
+package model
 
 import (
 	"time"
 
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/ian-howell/tuitris/iamerror"
-	"github.com/ian-howell/tuitris/lose"
-	"github.com/ian-howell/tuitris/mainmenu"
-	"github.com/ian-howell/tuitris/options"
-	"github.com/ian-howell/tuitris/pause"
-	"github.com/ian-howell/tuitris/play"
-	"github.com/ian-howell/tuitris/reset"
+	"github.com/ian-howell/tuitris/model/iamerror"
+	"github.com/ian-howell/tuitris/model/lose"
+	"github.com/ian-howell/tuitris/model/mainmenu"
+	"github.com/ian-howell/tuitris/model/options"
+	"github.com/ian-howell/tuitris/model/pause"
+	"github.com/ian-howell/tuitris/model/play"
+	"github.com/ian-howell/tuitris/model/reset"
+	"github.com/ian-howell/tuitris/model/splash"
+	"github.com/ian-howell/tuitris/model/win"
 	"github.com/ian-howell/tuitris/screen"
-	"github.com/ian-howell/tuitris/splash"
-	"github.com/ian-howell/tuitris/win"
 )
 
 const FPS = 1.0 / time.Second

@@ -4,16 +4,17 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/ian-howell/tuitris/iamerror"
-	"github.com/ian-howell/tuitris/lose"
-	"github.com/ian-howell/tuitris/mainmenu"
-	"github.com/ian-howell/tuitris/options"
-	"github.com/ian-howell/tuitris/pause"
-	"github.com/ian-howell/tuitris/play"
-	"github.com/ian-howell/tuitris/reset"
+	"github.com/ian-howell/tuitris/model"
+	"github.com/ian-howell/tuitris/model/iamerror"
+	"github.com/ian-howell/tuitris/model/lose"
+	"github.com/ian-howell/tuitris/model/mainmenu"
+	"github.com/ian-howell/tuitris/model/options"
+	"github.com/ian-howell/tuitris/model/pause"
+	"github.com/ian-howell/tuitris/model/play"
+	"github.com/ian-howell/tuitris/model/reset"
+	"github.com/ian-howell/tuitris/model/splash"
+	"github.com/ian-howell/tuitris/model/win"
 	"github.com/ian-howell/tuitris/screen"
-	"github.com/ian-howell/tuitris/splash"
-	"github.com/ian-howell/tuitris/win"
 
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
@@ -60,7 +61,7 @@ func main() {
 	errorModel, err := iamerror.New()
 	checkError(err)
 
-	initialModel := Model{
+	initialModel := model.Model{
 		CurrentScreen: screen.Splash,
 
 		MainViewport: mvp,
