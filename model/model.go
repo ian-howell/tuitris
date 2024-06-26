@@ -1,6 +1,7 @@
 package model
 
 import (
+	"errors"
 	"time"
 
 	"github.com/charmbracelet/bubbles/viewport"
@@ -15,6 +16,7 @@ import (
 	"github.com/ian-howell/tuitris/model/splash"
 	"github.com/ian-howell/tuitris/model/win"
 	"github.com/ian-howell/tuitris/screen"
+	"github.com/ian-howell/tuitris/styles"
 )
 
 const FPS = 1.0 / time.Second
@@ -36,6 +38,61 @@ type Model struct {
 	WinModel      win.Model
 	LoseModel     lose.Model
 	ErrorModel    iamerror.Model
+}
+
+const (
+	mainWidth  = 44
+	mainHeight = 44
+)
+
+func New() (_ Model, retErr error) {
+	mvp := viewport.New(mainWidth, mainHeight)
+	mvp.Style = styles.RoundedPurpleBorder().Padding(1)
+
+	splashModel, err := splash.New()
+	retErr = errors.Join(retErr, err)
+
+	mainMenuModel, err := mainmenu.New()
+	retErr = errors.Join(retErr, err)
+
+	optionsModel, err := options.New()
+	retErr = errors.Join(retErr, err)
+
+	resetModel, err := reset.New()
+	retErr = errors.Join(retErr, err)
+
+	playModel, err := play.New()
+	retErr = errors.Join(retErr, err)
+
+	pauseModel, err := pause.New()
+	retErr = errors.Join(retErr, err)
+
+	winModel, err := win.New()
+	retErr = errors.Join(retErr, err)
+
+	loseModel, err := lose.New()
+	retErr = errors.Join(retErr, err)
+
+	errorModel, err := iamerror.New()
+	retErr = errors.Join(retErr, err)
+
+	m := Model{
+		CurrentScreen: screen.Splash,
+
+		MainViewport: mvp,
+
+		SplashModel:   splashModel,
+		MainMenuModel: mainMenuModel,
+		OptionsModel:  optionsModel,
+		ResetModel:    resetModel,
+		PlayModel:     playModel,
+		PauseModel:    pauseModel,
+		WinModel:      winModel,
+		LoseModel:     loseModel,
+		ErrorModel:    errorModel,
+	}
+
+	return m, retErr
 }
 
 func (m Model) Init() tea.Cmd {
