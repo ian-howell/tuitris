@@ -31,18 +31,35 @@ func (m Model) pauseUpdate(msg tea.Msg) (Model, screen.Screen) {
 		return m, screen.Win
 	}
 
-	nextScreen := screen.Play
 	key := keyMsg.String()
+
+	if key == "p" {
+		m.Unpause()
+		return m, screen.Play
+	}
+
+	var nextScreen screen.Screen
 	switch key {
 	case "up", "k":
 		m.PauseMenu.Prev()
+		return m, screen.Play
 	case "down", "j":
 		m.PauseMenu.Next()
-	case "p":
-		m.Unpause()
+		return m, screen.Play
 	case " ":
 		nextScreen = m.PauseMenu.Get()
-		m.PauseMenu.Reset()
+	default:
+		// Ignore all other keys
+		return m, screen.Play
+	}
+
+	switch nextScreen {
+	case screen.Play, screen.MainMenu:
+		var err error
+		m, err = New()
+		if err != nil {
+			return m, screen.Error
+		}
 	}
 
 	return m, nextScreen

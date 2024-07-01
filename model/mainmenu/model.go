@@ -10,7 +10,7 @@ type Model struct {
 }
 
 func New() (Model, error) {
-	menu, err := ring.New(screen.Reset, screen.Options, screen.Exit)
+	menu, err := ring.New(screen.Play, screen.Options, screen.Exit)
 	if err != nil {
 		return Model{}, err
 	}

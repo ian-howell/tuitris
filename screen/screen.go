@@ -8,7 +8,6 @@ const (
 	Splash
 	MainMenu
 	Options
-	Reset
 	Play
 	Win
 	Lose
