@@ -1,6 +1,8 @@
 package play
 
 import (
+	"fmt"
+
 	"github.com/ian-howell/tuitris/styles"
 
 	"github.com/charmbracelet/bubbles/viewport"
@@ -55,11 +57,29 @@ func (m Model) playfieldView() string {
 	vp.Style = styles.RoundedPurpleBorder()
 
 	s := "Current Screen: Play\n"
-	s += "Press P to pause"
+	if m.Paused() {
+		s += m.pauseView()
+		// s += "PAUSED"
+	} else {
+		s += "Press P to pause"
+	}
 
 	vp.SetContent(s)
 
 	return vp.View()
+}
+
+func (m Model) pauseView() string {
+	s := "Which screen should we go to next?\n\n"
+	for i, choice := range m.PauseMenu.Values() {
+		cursor := " "
+		if m.PauseMenu.Cursor() == i {
+			cursor = ">"
+		}
+
+		s += fmt.Sprintf("%s %s\n", cursor, choice)
+	}
+	return s
 }
 
 func (m Model) queueView() string {

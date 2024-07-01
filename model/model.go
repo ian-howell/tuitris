@@ -10,7 +10,6 @@ import (
 	"github.com/ian-howell/tuitris/model/lose"
 	"github.com/ian-howell/tuitris/model/mainmenu"
 	"github.com/ian-howell/tuitris/model/options"
-	"github.com/ian-howell/tuitris/model/pause"
 	"github.com/ian-howell/tuitris/model/play"
 	"github.com/ian-howell/tuitris/model/reset"
 	"github.com/ian-howell/tuitris/model/splash"
@@ -34,7 +33,6 @@ type Model struct {
 	OptionsModel  options.Model
 	ResetModel    reset.Model
 	PlayModel     play.Model
-	PauseModel    pause.Model
 	WinModel      win.Model
 	LoseModel     lose.Model
 	ErrorModel    iamerror.Model
@@ -64,9 +62,6 @@ func New() (_ Model, retErr error) {
 	playModel, err := play.New()
 	retErr = errors.Join(retErr, err)
 
-	pauseModel, err := pause.New()
-	retErr = errors.Join(retErr, err)
-
 	winModel, err := win.New()
 	retErr = errors.Join(retErr, err)
 
@@ -86,7 +81,6 @@ func New() (_ Model, retErr error) {
 		OptionsModel:  optionsModel,
 		ResetModel:    resetModel,
 		PlayModel:     playModel,
-		PauseModel:    pauseModel,
 		WinModel:      winModel,
 		LoseModel:     loseModel,
 		ErrorModel:    errorModel,
@@ -122,8 +116,6 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.ResetModel, m.CurrentScreen = m.ResetModel.Update(msg)
 	case screen.Play:
 		m.PlayModel, m.CurrentScreen = m.PlayModel.Update(msg)
-	case screen.Pause:
-		m.PauseModel, m.CurrentScreen = m.PauseModel.Update(msg)
 	case screen.Win:
 		m.WinModel, m.CurrentScreen = m.WinModel.Update(msg)
 	case screen.Lose:
@@ -152,8 +144,6 @@ func (m Model) View() string {
 		s = m.ResetModel.View()
 	case screen.Play:
 		s = m.PlayModel.View()
-	case screen.Pause:
-		s = m.PauseModel.View()
 	case screen.Win:
 		s = m.WinModel.View()
 	case screen.Lose:

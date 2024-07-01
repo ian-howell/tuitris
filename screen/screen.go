@@ -10,7 +10,6 @@ const (
 	Options
 	Reset
 	Play
-	Pause
 	Win
 	Lose
 	Exit
