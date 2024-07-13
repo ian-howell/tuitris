@@ -2,6 +2,7 @@ package play
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/ian-howell/tuitris/styles"
 
@@ -10,19 +11,19 @@ import (
 )
 
 const (
-	mainWidth  = 44
+	mainWidth  = 44 * 2
 	mainHeight = 44
 
-	playFieldWidth  = 20
+	playFieldWidth  = 20 * 2
 	playFieldHeight = 40
 
-	holdWidth  = 8
+	holdWidth  = 8 * 2
 	holdHeight = 8
 
-	scoreWidth  = 8
+	scoreWidth  = 8 * 2
 	scoreHeight = 26
 
-	queueWidth  = 8
+	queueWidth  = 8 * 2
 	queueHeight = 40
 )
 
@@ -56,17 +57,45 @@ func (m Model) playfieldView() string {
 	vp := viewport.New(playFieldWidth, playFieldHeight)
 	vp.Style = styles.RoundedPurpleBorder()
 
-	s := "Current Screen: Play\n"
+	sb := strings.Builder{}
 	if m.Paused() {
-		s += m.pauseView()
-		// s += "PAUSED"
+		sb.WriteString(m.pauseView())
 	} else {
-		s += "Press P to pause"
+		sb.WriteString(m.playView())
 	}
 
-	vp.SetContent(s)
+	vp.SetContent(sb.String())
 
 	return vp.View()
+}
+
+func (m Model) playView() string {
+	var grid string
+	inputRows := m.board[:len(m.board)-1]
+	for _, inputRow := range inputRows {
+		grid = lipgloss.JoinVertical(lipgloss.Center, grid, rowView(inputRow))
+	}
+	return grid
+}
+
+func rowView(inputRow []rune) string {
+	var row string
+	for _, c := range inputRow {
+		row = lipgloss.JoinHorizontal(lipgloss.Center, row, cellView(c))
+	}
+	return row
+}
+
+func cellView(c rune) string {
+	const (
+		t = "▛▜"
+		b = "▙▟"
+	)
+	if c == 'W' {
+		return lipgloss.JoinVertical(lipgloss.Center, t, b)
+	}
+	s := string(c)
+	return fmt.Sprintf("%v%v\n%v%v", s, s, s, s)
 }
 
 func (m Model) pauseView() string {

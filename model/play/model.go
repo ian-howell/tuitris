@@ -8,6 +8,7 @@ import (
 type Model struct {
 	PauseMenu ring.Ring[screen.Screen]
 	isPaused  bool
+	board     [][]rune
 }
 
 func New() (Model, error) {
@@ -18,6 +19,20 @@ func New() (Model, error) {
 
 	return Model{
 		PauseMenu: pauseMenu,
+		board: [][]rune{ // the board gets a boundary to simplify bounds checking
+			[]rune("#W        W#"),
+			[]rune("#W Press  W#"),
+			[]rune("#W        W#"),
+			[]rune("#W  P     W#"),
+			[]rune("#W        W#"),
+			[]rune("#W For    W#"),
+			[]rune("#W        W#"),
+			[]rune("#W Pause  W#"),
+			[]rune("#W        W#"),
+			[]rune("#W        W#"),
+			[]rune("#WWWWWWWWWW#"),
+			[]rune("############"),
+		},
 	}, nil
 }
 

@@ -42,7 +42,7 @@ const (
 )
 
 func New() (_ Model, retErr error) {
-	mvp := viewport.New(mainWidth, mainHeight)
+	mvp := viewport.New(2*mainWidth, mainHeight)
 	mvp.Style = styles.RoundedPurpleBorder().Padding(1)
 
 	splashModel, err := splash.New()
