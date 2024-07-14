@@ -112,7 +112,7 @@ func (m Model) pauseView() string {
 }
 
 func (m Model) queueView() string {
-	vp := viewport.New(queueWidth, holdHeight)
+	vp := viewport.New(queueWidth, queueHeight)
 	vp.Style = styles.RoundedPurpleBorder()
 	return vp.View()
 }
