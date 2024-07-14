@@ -26,6 +26,8 @@ const (
 	spacer = ""
 )
 
+const block = "████\n████"
+
 func (m Model) View() string {
 	return lipgloss.JoinHorizontal(
 		lipgloss.Top,
@@ -76,28 +78,33 @@ func (m Model) playfieldView() string {
 }
 
 func (m Model) playView() string {
-	// Don't show the bottom row, it's effectively a "floor"
-	inputRows := m.board[:len(m.board)-1]
-	grid := rowView(inputRows[0])
-	for _, inputRow := range inputRows[1:] {
-		grid = lipgloss.JoinVertical(lipgloss.Center, grid, rowView(inputRow))
+	// TODO: Fix the hardcoded numbers
+	// rows contains the playing field plus the 2 rows above (the spawn rows)
+	rows := make([]string, 0, 22)
+	for r := range 22 {
+		// cells contains the contents between the walls of the playing field.
+		// For this reason, we'll range between 1 and 10 inclusively.
+		cells := make([]string, 0, 10)
+		for c := 1; c <= 10; c++ {
+			cells = append(cells, m.cellView(r, c))
+		}
+		rows = append(rows, lipgloss.JoinHorizontal(lipgloss.Center, cells...))
 	}
-	return grid
+	return lipgloss.JoinVertical(lipgloss.Center, rows...)
 }
 
-func rowView(inputRow []rune) string {
-	var row string
-	// Each row has "walls", so let's not print those
-	for _, c := range inputRow[1 : len(inputRow)-1] {
-		row = lipgloss.JoinHorizontal(lipgloss.Center, row, cellView(c))
-	}
-	return row
+func (m Model) cellView(row, col int) string {
+	return renderCell(m.board[row][col])
 }
 
-func cellView(c rune) string {
-	if c == 'W' {
-		return "████\n████"
+func renderCell(c rune) string {
+	style := lipgloss.NewStyle()
+	switch c {
+	case 'T':
+		style = style.Foreground(lipgloss.Color("#FF00FF"))
+		return style.Render(block)
 	}
+
 	s := string(c)
 	return strings.Join([]string{strings.Repeat(s, 4), strings.Repeat(s, 4)}, "\n")
 }
