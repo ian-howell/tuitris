@@ -11,15 +11,13 @@ func (m Model) Update(msg tea.Msg) (Model, screen.Screen) {
 	}
 
 	keyMsg, ok := msg.(tea.KeyMsg)
-	if !ok {
-		return m, screen.Play
-	}
-
-	key := keyMsg.String()
-	switch key {
-	case "p":
-		m.Pause()
-		return m, screen.Play
+	if ok {
+		key := keyMsg.String()
+		switch key {
+		case "p":
+			m.Pause()
+			return m, screen.Play
+		}
 	}
 
 	return m, screen.Play
