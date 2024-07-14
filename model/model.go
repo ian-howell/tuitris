@@ -37,7 +37,7 @@ type Model struct {
 }
 
 const (
-	mainWidth  = 42
+	mainWidth  = 62
 	mainHeight = 42
 )
 

@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	playFieldWidth  = 20
+	playFieldWidth  = 40
 	playFieldHeight = 40
 
 	holdWidth  = 8
@@ -87,15 +87,11 @@ func rowView(inputRow []rune) string {
 }
 
 func cellView(c rune) string {
-	const (
-		t = "▛▜"
-		b = "▙▟"
-	)
 	if c == 'W' {
-		return lipgloss.JoinVertical(lipgloss.Center, t, b)
+		return "████\n████"
 	}
 	s := string(c)
-	return fmt.Sprintf("%v%v\n%v%v", s, s, s, s)
+	return strings.Join([]string{strings.Repeat(s, 4), strings.Repeat(s, 4)}, "\n")
 }
 
 func (m Model) pauseView() string {
