@@ -11,19 +11,16 @@ import (
 )
 
 const (
-	mainWidth  = 44 * 2
-	mainHeight = 44
-
-	playFieldWidth  = 20 * 2
+	playFieldWidth  = 20
 	playFieldHeight = 40
 
-	holdWidth  = 8 * 2
+	holdWidth  = 8
 	holdHeight = 8
 
-	scoreWidth  = 8 * 2
-	scoreHeight = 26
+	scoreWidth  = 8
+	scoreHeight = 25
 
-	queueWidth  = 8 * 2
+	queueWidth  = 8
 	queueHeight = 40
 )
 
@@ -34,6 +31,7 @@ func (m Model) View() string {
 			lipgloss.Center,
 			m.holdView(),
 			"HOLD\n\n\n",
+			"SCORE",
 			m.scoreView(),
 		),
 		m.playfieldView(),
@@ -70,9 +68,11 @@ func (m Model) playfieldView() string {
 }
 
 func (m Model) playView() string {
-	var grid string
 	inputRows := m.board[:len(m.board)-1]
-	for _, inputRow := range inputRows {
+	// TODO lipgloss.JoinVertical has a bug in which it adds a newline after an empty string. So normally,
+	// the output grid would begin empty and we would append to it, but here, we can't do that exactly.
+	grid := rowView(inputRows[0])
+	for _, inputRow := range inputRows[1:] {
 		grid = lipgloss.JoinVertical(lipgloss.Center, grid, rowView(inputRow))
 	}
 	return grid
@@ -80,7 +80,7 @@ func (m Model) playView() string {
 
 func rowView(inputRow []rune) string {
 	var row string
-	for _, c := range inputRow {
+	for _, c := range inputRow[1 : len(inputRow)-1] {
 		row = lipgloss.JoinHorizontal(lipgloss.Center, row, cellView(c))
 	}
 	return row

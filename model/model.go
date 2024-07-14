@@ -37,13 +37,13 @@ type Model struct {
 }
 
 const (
-	mainWidth  = 44
-	mainHeight = 44
+	mainWidth  = 42
+	mainHeight = 42
 )
 
 func New() (_ Model, retErr error) {
-	mvp := viewport.New(2*mainWidth, mainHeight)
-	mvp.Style = styles.RoundedPurpleBorder().Padding(1)
+	mvp := viewport.New(mainWidth, mainHeight)
+	mvp.Style = styles.RoundedPurpleBorder()
 
 	splashModel, err := splash.New()
 	retErr = errors.Join(retErr, err)
