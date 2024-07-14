@@ -94,6 +94,19 @@ func (m Model) playView() string {
 }
 
 func (m Model) cellView(row, col int) string {
+	top, left := m.position.Row, m.position.Col
+	bottom, right := (top + m.activeTetronimo.Height() - 1), (left + m.activeTetronimo.Width() - 1)
+
+	if top <= row && row <= bottom && left <= col && col <= right {
+		// We're within the boundaries of a tetronimo
+		offsetRow, offsetCol := bottom-row, right-col
+		contents := m.activeTetronimo.Get(offsetRow, offsetCol)
+		if contents != ' ' {
+			// We need to ignore white spaces in the tetronimo grid.
+			return renderCell(contents)
+		}
+	}
+
 	return renderCell(m.board[row][col])
 }
 
