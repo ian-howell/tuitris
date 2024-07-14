@@ -41,6 +41,7 @@ func New() (Model, error) {
 			[]rune("#          #"),
 			[]rune("#          #"),
 			[]rune("#          #"),
+			[]rune("#          #"),
 			[]rune("############"),
 		},
 	}, nil

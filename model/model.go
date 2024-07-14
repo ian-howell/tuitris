@@ -38,7 +38,7 @@ type Model struct {
 
 const (
 	mainWidth  = 62
-	mainHeight = 44
+	mainHeight = 46
 )
 
 func New() (m Model, retErr error) {

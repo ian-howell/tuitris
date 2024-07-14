@@ -12,16 +12,16 @@ import (
 
 const (
 	playFieldWidth  = 40
-	playFieldHeight = 42
+	playFieldHeight = 44
 
 	holdWidth  = 8
 	holdHeight = 8
 
 	scoreWidth  = 8
-	scoreHeight = 26
+	scoreHeight = 28
 
 	queueWidth  = 8
-	queueHeight = 40
+	queueHeight = 42
 
 	spacer = ""
 )
