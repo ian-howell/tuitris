@@ -12,16 +12,18 @@ import (
 
 const (
 	playFieldWidth  = 40
-	playFieldHeight = 40
+	playFieldHeight = 42
 
 	holdWidth  = 8
 	holdHeight = 8
 
 	scoreWidth  = 8
-	scoreHeight = 25
+	scoreHeight = 26
 
 	queueWidth  = 8
 	queueHeight = 40
+
+	spacer = ""
 )
 
 func (m Model) View() string {
@@ -29,13 +31,19 @@ func (m Model) View() string {
 		lipgloss.Top,
 		lipgloss.JoinVertical(
 			lipgloss.Center,
+			spacer,
 			m.holdView(),
 			"HOLD\n\n\n",
-			"SCORE",
 			m.scoreView(),
+			"SCORE",
 		),
 		m.playfieldView(),
-		m.queueView(),
+		lipgloss.JoinVertical(
+			lipgloss.Center,
+			spacer,
+			m.queueView(),
+			"QUEUE",
+		),
 	)
 }
 
@@ -68,11 +76,9 @@ func (m Model) playfieldView() string {
 }
 
 func (m Model) playView() string {
+	// Don't show the bottom row, it's effectively a "floor"
 	inputRows := m.board[:len(m.board)-1]
-	// TODO lipgloss.JoinVertical has a bug in which it adds a newline after an empty string. So normally,
-	// the output grid would begin empty and we would append to it, but here, we can't do that exactly.
 	grid := rowView(inputRows[0])
-	// The bottom row is a "floor", so it doesn't need to be printed
 	for _, inputRow := range inputRows[1:] {
 		grid = lipgloss.JoinVertical(lipgloss.Center, grid, rowView(inputRow))
 	}
