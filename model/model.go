@@ -41,7 +41,7 @@ const (
 	mainHeight = 42
 )
 
-func New() (_ Model, retErr error) {
+func New() (m Model, retErr error) {
 	mvp := viewport.New(mainWidth, mainHeight)
 	mvp.Style = styles.RoundedPurpleBorder()
 
@@ -66,7 +66,7 @@ func New() (_ Model, retErr error) {
 	errorModel, err := iamerror.New()
 	retErr = errors.Join(retErr, err)
 
-	m := Model{
+	m = Model{
 		CurrentScreen: screen.Splash,
 
 		MainViewport: mvp,
