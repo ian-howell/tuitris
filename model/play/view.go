@@ -72,6 +72,7 @@ func (m Model) playView() string {
 	// TODO lipgloss.JoinVertical has a bug in which it adds a newline after an empty string. So normally,
 	// the output grid would begin empty and we would append to it, but here, we can't do that exactly.
 	grid := rowView(inputRows[0])
+	// The bottom row is a "floor", so it doesn't need to be printed
 	for _, inputRow := range inputRows[1:] {
 		grid = lipgloss.JoinVertical(lipgloss.Center, grid, rowView(inputRow))
 	}
@@ -80,6 +81,7 @@ func (m Model) playView() string {
 
 func rowView(inputRow []rune) string {
 	var row string
+	// Each row has "walls", so let's not print those
 	for _, c := range inputRow[1 : len(inputRow)-1] {
 		row = lipgloss.JoinHorizontal(lipgloss.Center, row, cellView(c))
 	}
